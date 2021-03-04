@@ -2,7 +2,7 @@ $(document).ready(function() {
 
     var socket = io.connect('http://127.0.0.1:5000');
 
-    var socket_messages = io('http://127.0.0.1:5000/messages');
+    var socket_messages = io('http://127.0.0.1:5000/messages')
 
     $('#send').on('click', function() {
         var message = $('#message').val();
@@ -15,27 +15,47 @@ $(document).ready(function() {
         alert(msg);
     });
 
-    socket.on('server originated', function(msg) {
+    socket.on('server orginated', function(msg) {
         alert(msg);
     });
 
-
-    var private_socket = io('http://127.0.0.1:5000/private');
+    var private_socket = io('http://127.0.0.1:5000/private')
 
     $('#send_username').on('click', function() {
-        private_socket.emit('username', $('#username').val())
+        private_socket.emit('username', $('#username').val());
     });
 
-    $('#send_private_message').on('click', function(){
-        val recipient = $('#send_to_username').val();
-        val message_to_send = $('#private_message').val();
+    $('#send_private_message').on('click', function() {
+        var recipient = $('#send_to_username').val();
+        var message_to_send = $('#private_message').val();
 
-        private_socket.emit('private_message', {'username': recipient, 'message': message_to_send});
+        private_socket.emit('private_message', {'username' : recipient, 'message' : message_to_send});
     });
 
-    private_socket.on('new_private_message', function(msg){
-    alert(msg);
+    private_socket.on('new_private_message', function(msg) {
+        alert(msg);
     });
+
+    $('#join_room').on('click', function() {
+        var room = $('#room_to_join').val();
+
+        private_socket.emit('join_room', room);
+    });
+
+    private_socket.on('room_message', function(msg) {
+        alert(msg);
+    });
+
+     $('#leave_room').on('click', function() {
+        var room = $('#room_to_join').val();
+
+        private_socket.emit('leave_the_room', room);
+    });
+
+    $('#disconnect').on('click', function(){
+        private_socket.emit('disconnect_me', 'disconnect');
+     });
+
     /*
 
     socket.on('connect', function() {
